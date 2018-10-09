@@ -1,10 +1,10 @@
-from pynput.keyboard import Key, Controller, Listener
-from pynput import mouse
+from pynput.keyboard import Key, Controller as kController, Listener
+from pynput.mouse import Button, Controller as mController
 
 import time, logging
 
-keyboard = Controller()
-mouse = mouse.Controller()
+keyboard = kController()
+mouse = mController()
 #  - - - - - -
 
 def tap(key):
@@ -13,3 +13,7 @@ def tap(key):
 
 def centerCursor():
     mouse.position = (0,0)#this will try to set it to monitors 0,0 but POE windows locks the mouse so it will snap mouse to top left of the POE windows
+
+def leftClick():
+    mouse.press(Button.left)
+    mouse.release(Button.left)
