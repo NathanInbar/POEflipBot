@@ -33,3 +33,36 @@ imageRecognition.py- reference above for information. We want it to do this: htt
 ~ ~ ~ ~ ~ ~ ~
 NOTE:
 building a higher level class like imageRecognition may require some ease-of-use low level functions to be made in the lower level classes like general.py or even chat.py (ex: the addition of leftClick() method) - be sure to note these function additions in the commit descriptions along with whatever edits you do to the bigger classes
+
+
+-------------------
+-POE CURRENCY ID's-
+-------------------
+1 alteration
+2 fusing
+3 alchemy
+4 chaos
+5 gemcutters
+6 exalted
+7 chroma
+8 jewellers
+9 chance
+10 chisel
+11 scour
+12 blessed
+13 regret
+14 regal
+15 divine
+16 vaal
+17 wisdom scroll
+18 portal scroll
+19 armourer's
+20 whetstone
+21 glassblowers
+22 transmutes
+23 augmentation
+24 mirror
+25 eternal
+26 perandus coin
+27 silver coin
+//etc
