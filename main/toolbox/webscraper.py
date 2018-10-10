@@ -20,7 +20,7 @@ def getPrices(id1, id2, size=5, side=0):#id1/id2 range from poe website, size is
         text = re.sub("[^0123456789\.]","",text)
         text = text[1:]
         text = text
-        if(x % 2 == side and x < (size*2)):#side = 0 means left, side = 1 means right
+        if(x % 2 == side and x < (size*2)):#side = 0 means left, side = 1 means right of margin numbers
             textAsNum = float(text)
             prices.append(round(float(text),2))
     return prices
@@ -34,5 +34,5 @@ def getBestMargin(prices):
 
 #print(getPrices(4,9))
 #print(getPricesWithReciprocal(4,9))
-#prices = getPricesWithReciprocal(4,9)
-#print('{} | {} | {}'.format(prices[0][0],prices[1][0],getBestMargin(prices)))
+prices = getPricesWithReciprocal(4,9)
+print('{} | {} | {}'.format(prices[0][0],prices[1][0],getBestMargin(prices)))
