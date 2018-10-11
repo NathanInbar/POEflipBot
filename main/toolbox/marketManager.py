@@ -1,5 +1,6 @@
 #from toolbox.general import *
 #from toolbox.webscraper import *
+'''
 import json
 import gspread
 from oauth2client.client import SignedJwtAssertionCredentials
@@ -15,3 +16,4 @@ sheet = file.open("POE Market Data").sheet1 # open sheet
 all_cells = sheet.range('A1:C6')
 for cell in all_cells:
     print (cell.value)
+'''
