@@ -11,6 +11,6 @@ Basically, read part of screen (i.e: inventory, trade window, stash) and parse i
 Compare screencap to database of locally saved currency images. (loop through all, and take highest probability one)
 """
 #Currency Icons (59x59) are stored in main/resources/PoE-Currency-Icons  each image corresponds to its Item ID according to readME
-def checkSlot(x,y):
+def checkSlot(x,y):#checks invetory slot
     slot_coords = moveToSlot(x,y,False)# made a tweak to inventory.moveToSlot() by adding a default arg and a return statement.
     print(slot_coords)
