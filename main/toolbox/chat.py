@@ -12,3 +12,6 @@ def typeMessage(message, channel):# message to be sent, || channel d @character 
     tap(Key.enter)
     keyboard.type(channel + ' ' + message)
     tap(Key.enter)
+
+def testFunc():
+    print('test works')

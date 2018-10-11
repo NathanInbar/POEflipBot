@@ -34,5 +34,5 @@ def getBestMargin(prices):
 
 #print(getPrices(4,9))
 #print(getPricesWithReciprocal(4,9))
-prices = getPricesWithReciprocal(4,9)
-print('{} | {} | {}'.format(prices[0][0],prices[1][0],getBestMargin(prices)))
+#prices = getPricesWithReciprocal(4,9)
+#print('{} | {} | {}'.format(prices[0][0],prices[1][0],getBestMargin(prices)))

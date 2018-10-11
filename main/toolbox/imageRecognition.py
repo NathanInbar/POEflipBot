@@ -3,8 +3,8 @@
 PoeFlipBot utilizes image recognition to verify the amount and type of each currency entering and exiting
 each trade. This is crucial for the integrity and efficiency of the bot itself.
 """
-from inventory import *
-from general import *
+from toolbox.inventory import *
+from toolbox.general import *
 
 """
 Basically, read part of screen (i.e: inventory, trade window, stash) and parse its currency type and quantity (white text top left))
