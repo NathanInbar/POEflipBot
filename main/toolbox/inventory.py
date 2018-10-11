@@ -5,10 +5,12 @@ InventoryOrigin = (422,302)#top left slot 440/327
 def toggleInventory():
     tap('i')
 
-def moveToSlot(x,y):#x ranges from 1-12, y ranges from 1-5
+def moveToSlot(x,y, move = True):#x ranges from 1-12, y ranges from 1-5
     xSlot = (x*29) + InventoryOrigin[0]
     ySlot = (y*29) + InventoryOrigin[1]
-    mouse.move(xSlot,ySlot)#(((x*29)+440), (((y*29)+327))
+    if (move):
+        mouse.move(xSlot,ySlot)#(((x*29)+440), (((y*29)+327))
+    return (xSlot,ySlot)
 # - - -
 def pickupItem(x,y):
     moveToSlot(x,y)
