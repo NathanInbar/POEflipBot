@@ -1,6 +1,30 @@
 from toolbox.general import *
-
 InventoryOrigin = (422,302)#top left slot 440/327
+
+itemID = {
+    1 : 'alteration',
+    2 : 'fusing',
+    3 : 'alchemy',
+    4 : 'chaos',
+    5 : 'gemcutters',
+    6 : 'exalted',
+    7 : 'chroma',
+    8 : 'jewellers',
+    9 : 'chance',
+    10 : 'chisel',
+    11 : 'scour',
+    12 : 'blessed',
+    13 : 'regret',
+    14 : 'regal',
+    15 : 'divine',
+    16 : 'vaal',
+    19 : 'armour',
+    20 : 'whetstone',
+    21 : 'glassblowers',
+    22 : 'transmutes',
+    23 : 'augmentation',
+    24 : 'mirror',
+}
 
 def toggleInventory():
     tap('i')

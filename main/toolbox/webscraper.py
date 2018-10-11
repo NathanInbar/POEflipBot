@@ -32,7 +32,7 @@ def getPricesWithReciprocal(id1, id2, size=5, side=0):
 def getBestMargin(prices):
     return round((float(prices[0][0]) - float(prices[1][0])), 2)
 
-print(getPrices(4,9,5))
+#print(getPrices(4,9,5))
 #print(getPricesWithReciprocal(4,9))
 #prices = getPricesWithReciprocal(4,9)
 #print('{} | {} | {}'.format(prices[0][0],prices[1][0],getBestMargin(prices)))
