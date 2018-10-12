@@ -5,6 +5,9 @@ import time, logging
 
 keyboard = kController()
 mouse = mController()
+
+league = 'Delve'
+
 #  - - - - - -
 
 def tap(key):

@@ -1,6 +1,7 @@
 from lxml import html
 from math import floor
 import requests, re, string
+from statistics import mean
 
 #"http://currency.poe.trade/search?league=Delve&online=x&stock=&want={}&have={}".format(id1,id2)
 #XPATH //*[@id=\"content\"]/div[@class=\"displayoffer \"]/div[@class=\"row\"]/div[@class=\"large-6 columns\"]/div/div/div[2]/div[3]/text()
@@ -30,9 +31,18 @@ def getPricesWithReciprocal(id1, id2, size=5, side=0):
     return prices
 
 def getBestMargin(prices):
-    return round((float(prices[0][0]) - float(prices[1][0])), 2)
+    return round(float(prices[0][0]) - float(prices[1][0]), 2)
 
-#print(getPrices(4,9))
+def convertToChaos(id):
+    return mean(getPrices(id,4,5,0))
+
+#def removeOutliers():
+
+#print(getPricesWithReciprocal(1,4,side=1))
+#print(getBestMargin(getPricesWithReciprocal(1,4,side=1)))
+
+#print(getPrices(4,9,5))
 #print(getPricesWithReciprocal(4,9))
-prices = getPricesWithReciprocal(4,9)
-print('{} | {} | {}'.format(prices[0][0],prices[1][0],getBestMargin(prices)))
+#prices = getPricesWithReciprocal(4,9)
+#print('{} | {} | {}'.format(prices[0][0],prices[1][0],getBestMargin(prices)))
+#print (convertToChaos(6))
