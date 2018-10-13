@@ -1,7 +1,7 @@
 import os, re
 
 path = os.getcwd()
-localpath = "{}\\POEflipBot\\main\\toolbox\\serialized.txt".format(path)
+localpath = "main\\toolbox\\serialized.txt"
 #"C:\\Users\\robot\\OneDrive\\Documents\\Python Projects\\POEflipBot\\main\\toolbox\\testDoc.txt"
 def readSerialized():
     """ reads the serialized.txt and prints its content """

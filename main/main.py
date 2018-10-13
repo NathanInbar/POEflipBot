@@ -8,6 +8,7 @@ import threading as mp
 #from toolbox.marketManager import *
 #required python modules: pynput, (lxml, requests, cssselect,)<-webscrape, pandas
 #uninstall (no longer needed): (oauth2client, PyOpenSSL, gspread)<-google spreadsheets
+#(numpy,opencv-python, scikit-image, imutils, pyobjc-core, py)<-- image recognition
 #print(dissectTrade(readMessage()[1]))
 """
 def testProcess():
@@ -26,8 +27,12 @@ def chatReadLoop():
 if __name__ == "__main__":
     chatRead = mp.Thread(target=chatReadLoop)
     #test = mp.Thread(target=testProcess)
-
     chatRead.start()
     #test.start()
     chatRead.join()
     #test.join()
+
+    #TRADE OFFER IMAGE RECOGNITION
+    #checkTradeWindow()
+    #print(getOffer())
+    #--end trade offer recognition
