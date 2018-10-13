@@ -1,6 +1,5 @@
 import os, re
 
-path = os.getcwd()
 localpath = 'serialized.txt'#"main\\toolbox\\serialized.txt"
 #"C:\\Users\\robot\\OneDrive\\Documents\\Python Projects\\POEflipBot\\main\\toolbox\\testDoc.txt"
 def readSerialized():

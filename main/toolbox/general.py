@@ -1,7 +1,7 @@
 from pynput.keyboard import Key, Controller as kController, Listener
 from pynput.mouse import Button, Controller as mController
 
-import time, logging
+import time, logging, os, sys
 
 keyboard = kController()
 mouse = mController()
@@ -20,3 +20,15 @@ def centerCursor():
 def leftClick():
     mouse.press(Button.left)
     mouse.release(Button.left)
+
+
+# - - - - -
+def getProjectPath():
+    cwd = os.getcwd()
+    cwd = cwd.replace('\\main\\toolbox', '')
+    return cwd
+
+def getResourcePath():
+    return getProjectPath() + '\\main\\resources'
+
+print(getProjectPath() + " " + getResourcePath())

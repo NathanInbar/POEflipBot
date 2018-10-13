@@ -12,17 +12,20 @@ import pyautogui
 import imutils
 from toolbox.inventory import *
 from toolbox.general import *
+
 cols = 12
 rows = 5
 read_delay = 0.01# Used for debug only. Set to 0 for practical application
 
 currency_images = []
+iconFolder = getResourcePath() + '\\PoE-Currency-Icons\\'
+print(iconFolder + 'blank.png')
 """-1 means we arent 100% sure what it is"""
-currency_images.append(cv2.imread("main\\resources\\PoE-Currency-Icons\\blank.png"))#alt(0)
-currency_images.append(cv2.imread("main\\resources\\PoE-Currency-Icons\\1.png"))#alt(1)
-currency_images.append(cv2.imread("main\\resources\\PoE-Currency-Icons\\2.png"))#fusing(2)
-currency_images.append(cv2.imread("main\\resources\\PoE-Currency-Icons\\3.png"))#alchemy(3)
-currency_images.append(cv2.imread("main\\resources\\PoE-Currency-Icons\\4.png"))#chaos (4)
+currency_images.append(cv2.imread(iconFolder +"blank.png"))#alt(0)
+currency_images.append(cv2.imread(iconFolder +"1.png"))#alt(1)
+currency_images.append(cv2.imread(iconFolder +"2.png"))#fusing(2)
+currency_images.append(cv2.imread(iconFolder +"3.png"))#alchemy(3)
+currency_images.append(cv2.imread(iconFolder +"4.png"))#chaos (4)
 
 #img_a = cv2.imread("main\\resources\\PoE-Currency-Icons\\test_compressed.png")
 #img_b = cv2.imread("main\\resources\\PoE-Currency-Icons\\test_cropped.png")

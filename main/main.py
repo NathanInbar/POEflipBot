@@ -6,6 +6,7 @@ from toolbox.imageRecognition import *
 from toolbox.marketManager import *
 from toolbox.GUIhandler import *
 import threading as mp
+import sys
 #from toolbox.marketManager import *
 #required python modules: pynput, (lxml, requests, cssselect,)<-webscrape, pandas
 #uninstall (no longer needed): (oauth2client, PyOpenSSL, gspread)<-google spreadsheets
