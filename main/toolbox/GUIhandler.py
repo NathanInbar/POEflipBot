@@ -31,4 +31,4 @@ def checkVariableDefs():
         """if the user has not previously entered their POE directory, prompt them to do so"""
         promptForDirectory()
 
-checkVariableDefs()
+#checkVariableDefs()

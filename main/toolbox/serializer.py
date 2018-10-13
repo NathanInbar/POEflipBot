@@ -1,6 +1,7 @@
+from toolbox.general import *
 import os, re
 
-localpath = 'serialized.txt'#"main\\toolbox\\serialized.txt"
+localpath = getProjectPath()+'\\serialized.txt'#"main\\toolbox\\serialized.txt"
 #"C:\\Users\\robot\\OneDrive\\Documents\\Python Projects\\POEflipBot\\main\\toolbox\\testDoc.txt"
 def readSerialized():
     """ reads the serialized.txt and prints its content """

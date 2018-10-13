@@ -19,7 +19,6 @@ read_delay = 0.01# Used for debug only. Set to 0 for practical application
 
 currency_images = []
 iconFolder = getResourcePath() + '\\PoE-Currency-Icons\\'
-print(iconFolder + 'blank.png')
 """-1 means we arent 100% sure what it is"""
 currency_images.append(cv2.imread(iconFolder +"blank.png"))#alt(0)
 currency_images.append(cv2.imread(iconFolder +"1.png"))#alt(1)

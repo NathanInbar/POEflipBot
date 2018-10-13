@@ -30,5 +30,3 @@ def getProjectPath():
 
 def getResourcePath():
     return getProjectPath() + '\\main\\resources'
-
-print(getProjectPath() + " " + getResourcePath())

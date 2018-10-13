@@ -39,3 +39,9 @@ def dissectTrade(message):
     """returns a list with 4 elements: {how much, of what they want to buy, for how much, of what we are selling}"""
     newMsg = {message.replace("Hi, I'd like to buy your ",'').replace("for my ",'').replace(" in {}.".format(league),'')}
     return str(newMsg).split()
+# - - - -
+def chatReadLoop():
+    """ loop method to be run on thread by main.py """
+    while True:
+        time.sleep(1)
+        print(readMessage())
