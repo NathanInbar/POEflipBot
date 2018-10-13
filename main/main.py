@@ -8,7 +8,7 @@ import threading as mp
 #from toolbox.marketManager import *
 #required python modules: pynput, (lxml, requests, cssselect,)<-webscrape, pandas
 #uninstall (no longer needed): (oauth2client, PyOpenSSL, gspread)<-google spreadsheets
-#(numpy,opencv-python, scikit-image, imutils, pyobjc-core, py)<-- image recognition
+#(numpy,opencv-python, scikit-image, imutils, pyobjc-core, pyautogui)<-- image recognition
 #print(dissectTrade(readMessage()[1]))
 """
 def testProcess():
