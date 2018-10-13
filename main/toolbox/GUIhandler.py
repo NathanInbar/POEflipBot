@@ -1,4 +1,4 @@
-from serializer import *
+from toolbox.serializer import *
 from tkinter import *
 import time
 
@@ -30,3 +30,5 @@ def checkVariableDefs():
     if(isVariableExists('@dir')==None):
         """if the user has not previously entered their POE directory, prompt them to do so"""
         promptForDirectory()
+
+checkVariableDefs()

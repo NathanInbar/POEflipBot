@@ -1,7 +1,8 @@
-from general import *
 
-InventoryOrigin = (422,302)#top left slot 440/327
-OfferOrigin = (54,128)
+from toolbox.general import *
+InventoryOrigin = (440,328)#top left slot 440/328
+OfferOrigin = (41,115)
+
 
 def toggleInventory():
     tap('i')
@@ -12,15 +13,16 @@ def moveToSlot(x,y, move = True):#x ranges from 1-12, y ranges from 1-5
     ySlot = (y*29) + InventoryOrigin[1]
     if (move):
         mouse.move(xSlot,ySlot)#(((x*29)+440), (((y*29)+327))
-    return (xSlot,ySlot)
+    return mouse.position
+#moveToSlot(0,0)
 # - - -
 def moveToOfferSlot(x,y,move = True):
     centerCursor()
-    xSlot = (x*28) + OfferOrigin[0]
-    ySlot = (y*28) + OfferOrigin[1]
+    xSlot = (x*29) + OfferOrigin[0]
+    ySlot = (y*29) + OfferOrigin[1]
     if (move):
         mouse.move(xSlot,ySlot)
-    return (xSlot,ySlot)
+    return mouse.position # returns the new mouse pos after centering and moving
 
 
 def pickupItem(x,y):
