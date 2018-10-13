@@ -1,55 +1,67 @@
 from lxml import html
-from math import floor
+from math import floor,ceil
 import requests, re, string
 from statistics import mean, median
 from pandas import *
+import numpy as np
 
 #"http://currency.poe.trade/search?league=Delve&online=x&stock=&want={}&have={}".format(id1,id2)
 #XPATH //*[@id=\"content\"]/div[@class=\"displayoffer \"]/div[@class=\"row\"]/div[@class=\"large-6 columns\"]/div/div/div[2]/div[3]/text()
 
-def getPrices(id1, id2, size=10, side=0):#id1/id2 range from poe website, size is how many items down the list you want, side is which side of the margin you want range 0 or 1, rounded = should list be rounded to hundredths
+def getPrices(id1, id2, size=5, side=0):#id1/id2 range from poe website, size is how many items down the list you want, side is which side of the margin you want range 0 or 1, rounded = should list be rounded to hundredths
     url = "http://currency.poe.trade/search?league=Delve&online=x&stock=&want={}&have={}".format(id1,id2)
     response = requests.get(url)
     source = response.content
     htmlElem = html.document_fromstring(source)
     smallElems = htmlElem.cssselect("small")
 
-    x=-1
+    x=0
     prices = []
     for elem in smallElems:
-        x+=1
+
         text = elem.text_content()
         text = re.sub("[^0123456789\.]","",text)
         text = text[1:]
-        text = text
         if(x % 2 == side and x < (size*2)):#side = 0 means left, side = 1 means right of margin numbers
-            print(text)
+        #size multiplied by 2 to account for both sides of the numbers
             textAsNum = float(text)
-            prices.append(round(float(text),2))
+            prices.append(textAsNum)
+            #prices.append(round(float(text),2))
+        x+=1
     return prices
+    #return prices
 
 def getPricesWithReciprocal(id1, id2, size=10, side=0):
+    """MUST RETURN A LIST WITh EVEN NUMBER OF ITEMS """
     prices = [getPrices(id1,id2,size,side), getPrices(id2,id1,size,abs(side-1))]
     return prices
 
 def convertToChaos(id):
     return mean(getPrices(id,4,5,0))
 
-def filterOutliersFromList(list):
-    """ argument list must be size 10 (or change the static q1 and q3 indexes to dynamically calculate it) """
+def filterOutliersFromList(inpList):
+    #""" argument list must be size 10 (or change the static q1 and q3 indexes to dynamically calculate it) """
     newList = []
-    listMedian = median(list)
-    q1 = list[2]
-    q3 = list[7]
+    listMedian = median(inpList)#median is q2
+
+    q1 = inpList[0:len(inpList)//2]
+    q3 = inpList[len(inpList)//2:len(inpList)]
+
+    q1 = median(q1)
+    q3 = median(q3)
+
+    #q3 = median(q3)
     IQR = q3-q1
-    outerFence = (IQR * 1.5)+q3
-    innerFence = (IQR * -1.5)+q1
+    outerFence = round((IQR * 1.5)+q3,2)
+    innerFence = round((IQR * -1.5)+q1,2)
 
     i = 0
-    for num in list:
-        if num < outerFence or num < innerFence:
-            newList.append(num)
-    return newList #"median:{}, q1:{}, q3:{}, IQR:{}, outerFence:{}, innerFence:{}".format(listMedian,q1,q3,IQR,outerFence,innerFence)
+    for num in inpList:
+        if num < outerFence and num > innerFence:
+           newList.append(num)
+    #print("median:{}, q1:{}, q3:{}, IQR:{}, outerFence:{}, innerFence:{}".format(listMedian,q1,q3,IQR,outerFence,innerFence))
+    return newList
+
 
 def filterOutliersFromLists(list2d):
     newList2d = [[]]
@@ -69,48 +81,22 @@ def trimLists(list2d):#GET BEST MARGIN DEPRECATED; USE RETURN FROM TRIMLISTS
     return ntl
 
 def getFMR(id1,id2):#full list treatment & margin return, ready to be packed into a cell
-    return round(calcMargin(trimLists(filterOutliersFromLists(getPricesWithReciprocal(id1,id2)))),2)
+    priceList2d = getPricesWithReciprocal(1,2,5)
+    filtered2dlist = filterOutliersFromLists(priceList2d)
+    trimmedLists = trimLists(filtered2dlist)
+    margins = calcMargin(trimmedLists())
+    return round(margins)#round(calcMargin(trimLists(filterOutliersFromLists(getPricesWithReciprocal(id1,id2)))),2)
 # - - -
-def fillHeaders():
-    headers = []
-    for i in range(0,24):
-        headers.append(i)
-    return headers
 
 def fullMarketLoop():
-    table1 =[[0.0,0.1,0.2,0.3],
-            [1.0,1.1,1.2,1.3],
-            [2.0,2.1,2.2,2.3],
-            [3.0,3.1,3.2,3.3]]
-    #table = [column][row]
-    #print(table1[1][0])=1.0
-    headers = fillHeaders()
-    table = []
-    for i in range(1,24):
-        new = []
-        for j in range(1,24):
-            new.append(getFMR(i,j))
-        table.append(new)
+    table = {}
+    for i in range(24):
+        for j in range(24):
+            table[i,j] = getFMR(i,j)
 
+    df = DataFrame.from_dict(table,orient="index")
+    df.to_csv('table.csv')
 
+#print(getFMR(1,2))
 
-    df = DataFrame(table, columns=headers)
-    df.to_csv('table.csv',index=False)
-
-    #FILL headers
-
-
-#test = [1,2,3,4,5,6,7,8,9,100]
-#print(filterOutliers(test))
-
-#print(getPricesWithReciprocal(1,4,side=1))
-#print(getBestMargin(getPricesWithReciprocal(1,4,side=1)))
-
-#print(getBestMargin(getPricesWithReciprocal(1,4,5)))
-#print(getPricesWithReciprocal(4,9))
-#prices = getPricesWithReciprocal(4,9)
-#print('{} | {} | {}'.format(prices[0][0],prices[1][0],getBestMargin(prices)))
-#print (convertToChaos(6))
-
-#fullMarketLoop()
-getFMR(1,1)
+getFMR(1,2)
