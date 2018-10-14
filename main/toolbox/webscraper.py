@@ -5,6 +5,32 @@ from statistics import mean, median
 from pandas import *
 import numpy as np
 
+itemID = {
+    1 : 'alteration',
+    2 : 'fusing',
+    3 : 'alchemy',
+    4 : 'chaos',
+    5 : 'gemcutters',
+    6 : 'exalted',
+    7 : 'chroma',
+    8 : 'jewellers',
+    9 : 'chance',
+    10 : 'chisel',
+    11 : 'scour',
+    12 : 'blessed',
+    13 : 'regret',
+    14 : 'regal',
+    15 : 'divine',
+    16 : 'vaal',
+    17 : 'wisdom scrolls',
+    18 : 'portal scrolls',
+    19 : 'armour',
+    20 : 'whetstone',
+    21 : 'glassblowers',
+    22 : 'transmutes',
+    23 : 'augmentation',
+    24 : 'mirror',
+}
 #"http://currency.poe.trade/search?league=Delve&online=x&stock=&want={}&have={}".format(id1,id2)
 #XPATH //*[@id=\"content\"]/div[@class=\"displayoffer \"]/div[@class=\"row\"]/div[@class=\"large-6 columns\"]/div/div/div[2]/div[3]/text()
 
@@ -22,8 +48,9 @@ def getPrices(id1, id2, size=5, side=0):#id1/id2 range from poe website, size is
         text = elem.text_content()
         text = re.sub("[^0123456789\.]","",text)
         text = text[1:]
-        if(x % 2 == side and x < (size*2)):#side = 0 means left, side = 1 means right of margin numbers
+        if(x % 2 == side and x < (size*2) and text is not ''):#side = 0 means left, side = 1 means right of margin numbers
         #size multiplied by 2 to account for both sides of the numbers
+            #print('\'{}\''.format(text))
             textAsNum = float(text)
             prices.append(textAsNum)
             #prices.append(round(float(text),2))
@@ -32,12 +59,8 @@ def getPrices(id1, id2, size=5, side=0):#id1/id2 range from poe website, size is
     #return prices
 
 def getPricesWithReciprocal(id1, id2, size=10, side=0):
-    """MUST RETURN A LIST WITh EVEN NUMBER OF ITEMS """
     prices = [getPrices(id1,id2,size,side), getPrices(id2,id1,size,abs(side-1))]
     return prices
-
-def convertToChaos(id):
-    return mean(getPrices(id,4,5,0))
 
 def filterOutliersFromList(inpList):
     #""" argument list must be size 10 (or change the static q1 and q3 indexes to dynamically calculate it) """
@@ -64,39 +87,44 @@ def filterOutliersFromList(inpList):
 
 
 def filterOutliersFromLists(list2d):
-    newList2d = [[]]
-    for list in list2d:
-        newList2d.append(filterOutliersFromList(list))
-    return newList2d
-
-def calcMargin(bestPricesAsTuple):
-    return bestPricesAsTuple[0] - bestPricesAsTuple[1]
+    newList2d=[[]]
+    #newList2d.append(filterOutliersFromList(list2d[0]))
+    #newList2d.append(filterOutliersFromList(list2d[1]))
+    return list2d
 
 def trimLists(list2d):#GET BEST MARGIN DEPRECATED; USE RETURN FROM TRIMLISTS
+    """return the first value of each list as a tuple"""
     newList=[]
-    for ls in list2d:
-        newList.append(ls[:1])
-    newList = [x for x in newList if x != []]
-    ntl = (newList[0][0],newList[1][0])
+    newList = [x for x in list2d if x != []]
+    ntl = (list2d[0][0],list2d[1][0])
     return ntl
+    #return newList
+
+def calcMargin(bestPricesAsTuple):
+    return abs(bestPricesAsTuple[0] - bestPricesAsTuple[1])
 
 def getFMR(id1,id2):#full list treatment & margin return, ready to be packed into a cell
-    priceList2d = getPricesWithReciprocal(1,2,5)
+    """This will return the margin in currency of ID 2 (ex: 1,2 returns a profit margin of 0.1 of id2 per trade)
+    - these margin values will be stored in the .csv, and when they are read they will be converted to chaos,
+    converted it inside getFMR is a LOT more inefficient although possible
+    """
+    priceList2d = getPricesWithReciprocal(1,2,5)#7 for size is arbitrary
+                #current problem: substituting 1 and 2 with id1 and id2 gives an index out of bounds exception
     filtered2dlist = filterOutliersFromLists(priceList2d)
     trimmedLists = trimLists(filtered2dlist)
-    margins = calcMargin(trimmedLists())
-    return round(margins)#round(calcMargin(trimLists(filterOutliersFromLists(getPricesWithReciprocal(id1,id2)))),2)
+    margins = calcMargin(trimmedLists)
+    return round(margins,2)
 # - - -
 
-def fullMarketLoop():
+def fullMarketLoop(x=24,y=24):
+    """ (args) = the current amount of item ids"""
     table = {}
-    for i in range(24):
-        for j in range(24):
+    for i in range(x):
+        for j in range(y):
             table[i,j] = getFMR(i,j)
+    #df = DataFrame.from_dict(table,orient="index")
+    #df.to_csv('table.csv')
 
-    df = DataFrame.from_dict(table,orient="index")
-    df.to_csv('table.csv')
-
+fullMarketLoop(4,4)
+##TIME FOR CALL ABOVE:[Finished in 21.334s]
 #print(getFMR(1,2))
-
-getFMR(1,2)
