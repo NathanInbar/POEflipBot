@@ -31,6 +31,9 @@ itemID = {
     23 : 'augmentation',
     24 : 'mirror',
 }
+
+illegalIDs = [0,17,18,19,20]#these are low level items that we want to skip like wisdom scrolls
+
 #"http://currency.poe.trade/search?league=Delve&online=x&stock=&want={}&have={}".format(id1,id2)
 #XPATH //*[@id=\"content\"]/div[@class=\"displayoffer \"]/div[@class=\"row\"]/div[@class=\"large-6 columns\"]/div/div/div[2]/div[3]/text()
 
@@ -108,23 +111,30 @@ def getFMR(id1,id2):#full list treatment & margin return, ready to be packed int
     - these margin values will be stored in the .csv, and when they are read they will be converted to chaos,
     converted it inside getFMR is a LOT more inefficient although possible
     """
-    priceList2d = getPricesWithReciprocal(1,2,5)#7 for size is arbitrary
+    priceList2d = getPricesWithReciprocal(id1,id2,5)#size is arbitrary
                 #current problem: substituting 1 and 2 with id1 and id2 gives an index out of bounds exception
-    filtered2dlist = filterOutliersFromLists(priceList2d)
-    trimmedLists = trimLists(filtered2dlist)
-    margins = calcMargin(trimmedLists)
+    if priceList2d[0] and priceList2d[1]:
+        filtered2dlist = filterOutliersFromLists(priceList2d)
+        trimmedLists = trimLists(filtered2dlist)
+        margins = calcMargin(trimmedLists)
+    else: margins = 0
     return round(margins,2)
 # - - -
 
-def fullMarketLoop(x=24,y=24):
+def fullMarketLoop(x):
     """ (args) = the current amount of item ids"""
+    y = x-1
     table = {}
     for i in range(x):
         for j in range(y):
-            table[i,j] = getFMR(i,j)
-    #df = DataFrame.from_dict(table,orient="index")
-    #df.to_csv('table.csv')
+            if i != j and (illegalIDs.count(i)==0) and (illegalIDs.count(j)==0): #is not in the list of illegal characters
+                print(i,j)
+                table[i,j] = getFMR(i,j)
+                print(table[i,j])
+    df = DataFrame.from_dict(table,orient="index")
+    df.to_csv('table.csv')
+print(fullMarketLoop(24))
+#14 minutes and 15 seconds
 
-fullMarketLoop(4,4)
-##TIME FOR CALL ABOVE:[Finished in 21.334s]
-#print(getFMR(1,2))
+#fullMarketLoop(24)#argument = amount of items to go down the list
+#print(fullMarketLoop(24))
