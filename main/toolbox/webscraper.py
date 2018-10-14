@@ -118,7 +118,8 @@ def getFMR(id1,id2):#full list treatment & margin return, ready to be packed int
         trimmedLists = trimLists(filtered2dlist)
         margins = calcMargin(trimmedLists)
     else: margins = 0
-    return round(margins,2)
+    #return round(margins,2)
+    return margins
 # - - -
 
 def fullMarketLoop(x):
@@ -133,8 +134,10 @@ def fullMarketLoop(x):
                 print(table[i,j])
     df = DataFrame.from_dict(table,orient="index")
     df.to_csv('table.csv')
-print(fullMarketLoop(24))
-#14 minutes and 15 seconds
 
+#print(fullMarketLoop(24))
+#14 minutes and 15 seconds
+#print(calcMargin(trimLists(filterOutliersFromLists(getPricesWithReciprocal(6,24)))))
 #fullMarketLoop(24)#argument = amount of items to go down the list
 #print(fullMarketLoop(24))
+#print(getFMR(6,24))
