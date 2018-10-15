@@ -122,15 +122,21 @@ def getFMR(id1,id2):#full list treatment & margin return, ready to be packed int
     return margins
 # - - -
 
-def fullMarketLoop(x):
-    """ (args) = the current amount of item ids"""
-    y = x-1
+def fullMarketLoop(x=24):
+    """ (args) = the current amount of item ids
+
+    THE MARGIN THAT IS PUT INTO THE TABLE IS HOW MUCH OF CURRENCY ID2 YOU WILL PROFIT
+    """
+    x+=1
+    y = x
     table = {}
     for i in range(x):
-        for j in range(y):
+        for j in range(y):#edit the range for debugging purposes
             if i != j and (illegalIDs.count(i)==0) and (illegalIDs.count(j)==0): #is not in the list of illegal characters
                 print(i,j)
                 table[i,j] = getFMR(i,j)
+                if table[i,j] == None:
+                    table[i,j] = 0
                 print(table[i,j])
     df = DataFrame.from_dict(table,orient="index")
     df.to_csv('table.csv')
@@ -140,4 +146,5 @@ def fullMarketLoop(x):
 #print(calcMargin(trimLists(filterOutliersFromLists(getPricesWithReciprocal(6,24)))))
 #fullMarketLoop(24)#argument = amount of items to go down the list
 #print(fullMarketLoop(24))
-#print(getFMR(6,24))
+#11.8min
+print(getFMR(6,24))
