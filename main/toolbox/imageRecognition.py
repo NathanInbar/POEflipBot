@@ -52,9 +52,9 @@ def checkSlot(x,y):#checks invetory slot
     img_grab = pyautogui.screenshot(region = (slot_cords[0],slot_cords[1],26,26 ))#was 29,29
 
     img_grab = cv2.cvtColor(np.array(img_grab), cv2.COLOR_RGB2BGR)
-    quant_img_ones = img_grab[0:9, 7:13]#6x9
+    quant_img_ones = img_grab[0:9, 5:11]#6x9
     quant_img_tens = img_grab[0:9, 0:6]#6x9
-    #cv2.imwrite("C:\\Users\\Cptcr\\OneDrive\\Documents\\GitHub\\POEflipBot\\main\\resources\\Quantity\\new.png",quant_img_tens)
+    cv2.imwrite("C:\\Users\\Cptcr\\OneDrive\\Documents\\GitHub\\POEflipBot\\main\\resources\\Quantity\\new.png",quant_img_ones)
     #print(findQuantMatch(quant_img_tens))
     if (findQuantMatch(quant_img_ones) == -1 ):#if the ones place doesnt find a match we know the value is less than 10
         quantity = findQuantMatch(quant_img_tens)
@@ -63,8 +63,8 @@ def checkSlot(x,y):#checks invetory slot
         quantity = int(  str(findQuantMatch(quant_img_tens)) + str(findQuantMatch(quant_img_ones)) )
 
     print(quantity)
-    #cv2.imshow("img", quant_img_tens) # to view the image (debug)
-    #cv2.waitKey(0)# to view the image (debug)
+    cv2.imshow("img", quant_img_ones) # to view the image (debug)
+    cv2.waitKey(0)# to view the image (debug)
 
     #Do the logic here to detect what id and quant the item is.
 

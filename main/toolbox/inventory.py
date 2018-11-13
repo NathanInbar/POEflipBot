@@ -25,7 +25,14 @@ def moveToSlot(x,y, move = True):#x ranges from 1-12, y ranges from 1-5
 # - - -
 def moveToOfferSlot(x,y,move = True):
     centerCursor()
-    xSlot = (x*29) + OfferOrigin[0]
+    add = 0
+    if(x >= 3):
+        add += 1
+    if (x >= 7):
+        add += 1
+    if (x >= 11):
+        add += 1
+    xSlot = (x*29) + OfferOrigin[0] + add
     ySlot = (y*29) + OfferOrigin[1]
     if (move):
         mouse.move(xSlot,ySlot)
