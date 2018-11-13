@@ -10,21 +10,25 @@ import numpy as np
 import cv2
 import pyautogui
 import imutils
-from toolbox.inventory import *
-from toolbox.general import *
+from inventory import *#toolbox.
+from general import *#toolbox.
+import glob
 
 cols = 12
 rows = 5
-read_delay = 0.01# Used for debug only. Set to 0 for practical application
 
 currency_images = []
+quant_images = []
 iconFolder = getResourcePath() + '\\PoE-Currency-Icons\\'
+quantFolder = getResourcePath() + '\\Quantity\\'
+
 """-1 means we arent 100% sure what it is"""
-currency_images.append(cv2.imread(iconFolder +"blank.png"))#alt(0)
-currency_images.append(cv2.imread(iconFolder +"1.png"))#alt(1)
-currency_images.append(cv2.imread(iconFolder +"2.png"))#fusing(2)
-currency_images.append(cv2.imread(iconFolder +"3.png"))#alchemy(3)
-currency_images.append(cv2.imread(iconFolder +"4.png"))#chaos (4)
+
+#currency_images.append(cv2.imread(iconFolder +"blank.png"))
+#currency_images.append(cv2.imread(iconFolder +"1.png"))#alt(1)
+#currency_images.append(cv2.imread(iconFolder +"2.png"))#fusing(2)
+#currency_images.append(cv2.imread(iconFolder +"3.png"))#alchemy(3)
+#currency_images.append(cv2.imread(iconFolder +"4.png"))#chaos (4)
 
 #img_a = cv2.imread("main\\resources\\PoE-Currency-Icons\\test_compressed.png")
 #img_b = cv2.imread("main\\resources\\PoE-Currency-Icons\\test_cropped.png")
@@ -40,47 +44,71 @@ Compare screencap to database of locally saved currency images. (loop through al
 def mse(img_a,img_b):#Returns the mean squared error (popular image comparision must be same dimensions)
     err = np.sum( (img_a.astype("float") - img_b.astype("float")) ** 2 )
     err /= float(img_a.shape[0] * img_b.shape[1])
-    #print(err)
+    print(err)
     return err
 def checkSlot(x,y):#checks invetory slot
-    slot_cords = moveToOfferSlot(x,y,True)#use the coordinates of each slot of imageRecognition
-    #print(slot_cords)
-    img_grab = pyautogui.screenshot(region = (slot_cords[0],slot_cords[1],29,29))
+    quantity = 0
+    slot_cords = moveToSlot(x,y,True)#use the coordinates of each slot of imageRecognition
+    img_grab = pyautogui.screenshot(region = (slot_cords[0],slot_cords[1],26,26 ))#was 29,29
+
     img_grab = cv2.cvtColor(np.array(img_grab), cv2.COLOR_RGB2BGR)
-    #path = "main\\resources\\PoE-Currency-Icons\\grabbed.png"
-    #img_grab.save("im.png")
-    #new_img = cv2.imread("im.png")
+    quant_img_ones = img_grab[0:9, 7:13]#6x9
+    quant_img_tens = img_grab[0:9, 0:6]#6x9
+    #cv2.imwrite("C:\\Users\\Cptcr\\OneDrive\\Documents\\GitHub\\POEflipBot\\main\\resources\\Quantity\\new.png",quant_img_tens)
+    #print(findQuantMatch(quant_img_tens))
+    if (findQuantMatch(quant_img_ones) == -1 ):#if the ones place doesnt find a match we know the value is less than 10
+        quantity = findQuantMatch(quant_img_tens)
+        print('here')
+    else:
+        quantity = int(  str(findQuantMatch(quant_img_tens)) + str(findQuantMatch(quant_img_ones)) )
+
+    print(quantity)
+    #cv2.imshow("img", quant_img_tens) # to view the image (debug)
+    #cv2.waitKey(0)# to view the image (debug)
 
     #Do the logic here to detect what id and quant the item is.
-    #findMatch(img_grab)
-    id = findMatch(img_grab) # TO-DO: LOGIC (with image recog)
+
+    #id = findMatch(img_grab) # TO-DO: LOGIC (with image recog)
+
+    #print(id)
     quant = 1# TO-DO: LOGIC (with image recog)
     slot_offer = (id,quant) # nicely packed tuple to pass as an arg
     #if the slot is blank we shouldn't append anything.
-    #print(id)
     currently_in_offer_window.append(  slot_offer  )#append what the checked slot is offering and append it.
 
 def findMatch(img_grab):
     lowest = 1000000
     index = -1
-    """Compare grabbed slot to all currency image"""
+    """Compare grabbed slot to all currency images"""
     for x in range(len(currency_images)):
         diff = mse(img_grab,currency_images[x])
         if (diff < lowest):
             lowest = diff
             index = x
-    if (lowest < 11000):#within reasonable matching
-        return index # ID
+    if (lowest < 12500):#within reasonable matching
+        return index + 1 # ID
     else:#not a match
         return -1
 
+def findQuantMatch(img_grab):
+    lowest = 1000000
+    index = -1
+    """Compare grabbed slot to all currency images"""
+    for x in range(len(quant_images)):
+        diff = mse(img_grab,quant_images[x])
+        if (diff < lowest):
+            lowest = diff
+            index = x
+    if (lowest < 12500):#within reasonable matching
+        return index  # ID
+    else:#not a match
+        return -1
 
 def checkTradeWindow():#12x5 (12 columns, 5 rows)
     """Will check every slot in the trade window and log its type and amount"""
     for y in range(cols):
         for x in range(rows):
             checkSlot(y,x)#for every slot, read the ID and quant
-            #time.sleep(read_delay)#This time.sleep is to simulate reading time for the image recog
     sortOffered()
 
 def sortOffered(offered = currently_in_offer_window,sort = [],first = True):
@@ -117,9 +145,31 @@ def determineIfInTrade():#--
     """Scan some guarenteed pixels to see if in trade window or not"""
     pass
 
+def addImagesToList():
+    for x in range (1,25):#how many images are in the PoeCurrencyIcons Folder
+        currency_images.append(cv2.imread(iconFolder + str(x) +".png"))
+    currency_images.append(cv2.imread(iconFolder +"45.png"))
+    currency_images.append(cv2.imread(iconFolder +"46.png"))
+    currency_images.append(cv2.imread(iconFolder +"47.png"))
+    currency_images.append(cv2.imread(iconFolder +"69.png"))
+    currency_images.append(cv2.imread(iconFolder +"blank.png"))
+    for x in range(10):
+        quant_images.append(cv2.imread(quantFolder + str(x)+".png"))
+
+
+
+addImagesToList()#adds all images from the PoeCurrencyIcons folder to a list
+
+time.sleep(2)
 #checkTradeWindow()
 #sortOffered(currently_in_offer_window,[])
-#checkSlot(2,1)
+#print(offer)
+checkSlot(0,0)
+#time.sleep(2)
+#checkSlot(11,4)
+
+
+
 
 """
 HOW TO USE imageRecognition
