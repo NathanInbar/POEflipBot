@@ -47,34 +47,34 @@ def mse(img_a,img_b):#Returns the mean squared error (popular image comparision 
     print(err)
     return err
 def checkSlot(x,y):#checks invetory slot
-    quantity = 0
+    quantity = 1
     slot_cords = moveToSlot(x,y,True)#use the coordinates of each slot of imageRecognition
     img_grab = pyautogui.screenshot(region = (slot_cords[0],slot_cords[1],26,26 ))#was 29,29
 
     img_grab = cv2.cvtColor(np.array(img_grab), cv2.COLOR_RGB2BGR)
     quant_img_ones = img_grab[0:9, 5:11]#6x9
     quant_img_tens = img_grab[0:9, 0:6]#6x9
-    cv2.imwrite("C:\\Users\\Cptcr\\OneDrive\\Documents\\GitHub\\POEflipBot\\main\\resources\\Quantity\\new.png",quant_img_ones)
+    #cv2.imwrite("C:\\Users\\Cptcr\\OneDrive\\Documents\\GitHub\\POEflipBot\\main\\resources\\Quantity\\new.png",quant_img_ones)
     #print(findQuantMatch(quant_img_tens))
     if (findQuantMatch(quant_img_ones) == -1 ):#if the ones place doesnt find a match we know the value is less than 10
         quantity = findQuantMatch(quant_img_tens)
-        print('here')
+        print('No Tens Place')#i.e less than 10
     else:
         quantity = int(  str(findQuantMatch(quant_img_tens)) + str(findQuantMatch(quant_img_ones)) )
 
     print(quantity)
-    cv2.imshow("img", quant_img_ones) # to view the image (debug)
-    cv2.waitKey(0)# to view the image (debug)
+    #cv2.imshow("img", quant_img_ones) # to view the image (debug)
+    #cv2.waitKey(0)# to view the image (debug)
 
     #Do the logic here to detect what id and quant the item is.
 
     #id = findMatch(img_grab) # TO-DO: LOGIC (with image recog)
 
     #print(id)
-    quant = 1# TO-DO: LOGIC (with image recog)
-    slot_offer = (id,quant) # nicely packed tuple to pass as an arg
+    # TO-DO: LOGIC (with image recog)
+    slot_offer = (id,quantity) # nicely packed tuple to pass as an arg
     #if the slot is blank we shouldn't append anything.
-    currently_in_offer_window.append(  slot_offer  )#append what the checked slot is offering and append it.
+    currently_in_offer_window.append(  slot_offer  )# what the checked slot is offering and append it.
 
 def findMatch(img_grab):
     lowest = 1000000
@@ -93,7 +93,7 @@ def findMatch(img_grab):
 def findQuantMatch(img_grab):
     lowest = 1000000
     index = -1
-    """Compare grabbed slot to all currency images"""
+    """Compare grabbed slot to all Quantity images"""
     for x in range(len(quant_images)):
         diff = mse(img_grab,quant_images[x])
         if (diff < lowest):
@@ -159,14 +159,11 @@ def addImagesToList():
 
 
 addImagesToList()#adds all images from the PoeCurrencyIcons folder to a list
-
+#^ Ask nathan how to only have to do this once
 time.sleep(2)
 #checkTradeWindow()
 #sortOffered(currently_in_offer_window,[])
-#print(offer)
 checkSlot(0,0)
-#time.sleep(2)
-#checkSlot(11,4)
 
 
 
