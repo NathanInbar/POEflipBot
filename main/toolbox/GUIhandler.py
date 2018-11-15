@@ -10,11 +10,39 @@ import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+import matplotlib.animation as animation
+from matplotlib import style
 #
+import psutil
 import time
 
 #C:\Program Files (x86)\Grinding Gear Games\Path of Exile
 icoPath = getResourcePath() + '\\other\\poeflipicon.ico'
+
+style.use("ggplot")#dark_background, ggplot, grayscale
+
+f = Figure(figsize=(5,5), dpi=100)
+a = f.add_subplot(111)
+
+xList = []
+yList = []
+def animate(i):
+
+    cpu = int(psutil.cpu_percent(interval=.4,percpu=False))
+
+    xList.append(i)
+    yList.append(cpu)
+
+    a.clear()
+    a.plot(xList, yList)
+
+    if len(xList) > 30:
+        del xList[0]
+        del yList[0]
+
+    a.set_title('CPU Usage Over Time')
+    a.set_xlabel('Elapsed Time (seconds)')
+    a.set_ylabel('CPU Usage (percent)')
 
 def mainGUI():
     root = Tk()
@@ -40,14 +68,11 @@ def mainGUI():
     nb.add(page3, text='Log')
 
     #widgets
-    f = Figure(figsize=(5,5), dpi=100)
-    a = f.add_subplot(111)
-    a.plot([1,2,3,4,5,6,7,8],[5,6,2,6,2,6,6,2])
-
     canvas = FigureCanvasTkAgg(f, page2)
-    canvas.draw()
     canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH,expand=True)
+    canvas.draw()
 
+    ani = animation.FuncAnimation(f, animate, interval=500)
     mainloop()
 
 # - - - - -

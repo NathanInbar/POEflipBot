@@ -11,7 +11,7 @@ import sys
 #pynput, (lxml, requests, cssselect,)<-webscrape
 #(numpy,opencv-python, scikit-image, imutils, pyobjc-core, pyautogui)<-- image recognition
 #(pandas)<-dataframes/writing to csv
-#matplotlib
+#(matplotlib)<-graphs, (psutil)<-pull system data like cpu usage
 
 #def marketReadLoop():
 if __name__ == "__main__":
