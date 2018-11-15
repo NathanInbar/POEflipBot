@@ -11,6 +11,7 @@ import sys
 #pynput, (lxml, requests, cssselect,)<-webscrape
 #(numpy,opencv-python, scikit-image, imutils, pyobjc-core, pyautogui)<-- image recognition
 #(pandas)<-dataframes/writing to csv
+#matplotlib
 
 #def marketReadLoop():
 if __name__ == "__main__":

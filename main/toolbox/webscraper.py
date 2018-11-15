@@ -146,4 +146,4 @@ def fullMarketLoop(x=24):
 #print(calcMargin(trimLists(filterOutliersFromLists(getPricesWithReciprocal(6,24)))))
 #fullMarketLoop(24)#argument = amount of items to go down the list
 #11.8min
-fullMarketLoop()
+#fullMarketLoop()

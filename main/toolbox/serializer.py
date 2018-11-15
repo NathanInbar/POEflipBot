@@ -1,4 +1,5 @@
-from toolbox.general import *
+#from toolbox.general import *
+from general import *
 import os, re
 
 localpath = getProjectPath()+'\\serialized.txt'#"main\\toolbox\\serialized.txt"

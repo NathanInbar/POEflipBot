@@ -7,7 +7,7 @@ keyboard = kController()
 mouse = mController()
 
 league = 'Delve'
-
+version = '0.0.0'
 #  - - - - - -
 
 def tap(key):
@@ -29,4 +29,4 @@ def getProjectPath():
     return cwd
 
 def getResourcePath():
-    return getProjectPath() + '\\main\\resources'
+    return getProjectPath() + '\\resources'
