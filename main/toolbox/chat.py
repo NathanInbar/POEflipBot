@@ -1,5 +1,7 @@
-from toolbox.general import *
-from toolbox.serializer import *
+#from toolbox.general import *
+#from toolbox.serializer import *
+from general import *
+from serializer import *
 #C:\Program Files (x86)\Grinding Gear Games\Path of Exile\logs\Client.txt
 
 clientLogPath = "{}\\logs\\Client.txt".format(getTextVariable('@dir'))

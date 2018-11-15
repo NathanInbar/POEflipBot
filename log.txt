@@ -1,0 +1,50 @@
+TRADE: with player 'Deez_Nuts'
+	PROFIT: 35 CHAOS
+TRADE: blah blah
+	PROFIT: 40 WISDOM SCROLLS
+SCAM DETECTED: player 'Sugma'
+	owed: 3 exalt
+	paid: 2 chance
+TRADE: with player 'Deez_Nuts'
+	PROFIT: 35 CHAOS
+TRADE: blah blah
+	PROFIT: 40 WISDOM SCROLLS
+SCAM DETECTED: player 'Sugma'
+	owed: 3 exalt
+	paid: 2 chance
+TRADE: with player 'Deez_Nuts'
+	PROFIT: 35 CHAOS
+TRADE: blah blah
+	PROFIT: 40 WISDOM SCROLLS
+SCAM DETECTED: player 'Sugma'
+	owed: 3 exalt
+	paid: 2 chance
+TRADE: with player 'Deez_Nuts'
+	PROFIT: 35 CHAOS
+TRADE: blah blah
+	PROFIT: 40 WISDOM SCROLLS
+TRADE: with player 'Deez_Nuts'
+	PROFIT: 35 CHAOS
+TRADE: blah blah
+	PROFIT: 40 WISDOM SCROLLS
+SCAM DETECTED: player 'Sugma'
+	owed: 3 exalt
+	paid: 2 chance
+TRADE: with player 'Deez_Nuts'
+	PROFIT: 35 CHAOS
+TRADE: blah blah
+	PROFIT: 40 WISDOM SCROLLS
+SCAM DETECTED: player 'Sugma'
+	owed: 3 exalt
+	paid: 2 chance
+TRADE: with player 'Deez_Nuts'
+	PROFIT: 35 CHAOS
+TRADE: blah blah
+	PROFIT: 40 WISDOM SCROLLS
+SCAM DETECTED: player 'Sugma'
+	owed: 3 exalt
+	paid: 2 chance
+TRADE: with player 'Deez_Nuts'
+	PROFIT: 35 CHAOS
+TRADE: blah blah
+	PROFIT: 40 WISDOM SCROLLS

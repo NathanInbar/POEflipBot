@@ -2,7 +2,8 @@
 from general import *
 import os, re
 
-localpath = getProjectPath()+'\\serialized.txt'#"main\\toolbox\\serialized.txt"
+localpath = getProjectPath().replace('\\main','')+'\\serialized.txt'#"main\\toolbox\\serialized.txt"
+logPath = getProjectPath().replace('\\main','')+'\\log.txt'
 #"C:\\Users\\robot\\OneDrive\\Documents\\Python Projects\\POEflipBot\\main\\toolbox\\testDoc.txt"
 def readSerialized():
     """ reads the serialized.txt and prints its content """
@@ -24,6 +25,19 @@ def writeSerialized(text, txtVariable):
         if txtVariable not in data:
             f_contents = f.write(text)
 
+# - - -
+
+def readLog():
+    with open(logPath, 'r') as f:
+        f_contents = f.read()
+        return f_contents
+        #print(f_contents)
+
+def writeLog():
+    with open(logPath, 'a') as f:
+        f_contents = f.write(text)
+
+# - - -
 def getTextVariable(txtVariable):
     """ returns the value for the text variable that has been serialized """
     with open(localpath, 'r') as f:

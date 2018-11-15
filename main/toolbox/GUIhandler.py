@@ -1,7 +1,9 @@
 #from toolbox.serializer import *
 #from toolbox.general import *
 from general import *
+from chat import *
 from serializer import *
+#
 from tkinter import *
 import tkinter as tk
 from tkinter import ttk
@@ -18,17 +20,19 @@ import time
 
 #C:\Program Files (x86)\Grinding Gear Games\Path of Exile
 icoPath = getResourcePath() + '\\other\\poeflipicon.ico'
-
-style.use("ggplot")#dark_background, ggplot, grayscale
-
+#style.use("ggplot")#dark_background, ggplot, grayscale
+style.use("dark_background")
 f = Figure(figsize=(5,5), dpi=100)
 a = f.add_subplot(111)
 
 xList = []
 yList = []
+
+
 def animate(i):
 
-    cpu = int(psutil.cpu_percent(interval=.4,percpu=False))
+    cpu = int(psutil.cpu_percent(interval=.5,percpu=False))
+
 
     xList.append(i)
     yList.append(cpu)
@@ -63,16 +67,50 @@ def mainGUI():
     page1 = ttk.Frame(nb)
     page2 = ttk.Frame(nb)
     page3 = ttk.Frame(nb)
-    nb.add(page1, text='Menu')
-    nb.add(page2, text='CPU Monitor')
-    nb.add(page3, text='Log')
 
-    #widgets
-    canvas = FigureCanvasTkAgg(f, page2)
+    nb.add(page1, text='Menu')
+    nb.add(page2, text='   Log   ')
+    nb.add(page3, text='CPU Monitor')
+#Menu --------------------------------------------------------------------------
+    settingsLabel = Label(page1,text='Correct POE Settings: ', font = ('Comic Sans MS', 24))
+    settingsLabel.pack()
+    check1 = Checkbutton(page1,text='800x600 window', font = ('Helvetica', 16))
+    check1.pack()
+    check2 = Checkbutton(page1,text='Lock cursor to window', font = ('Helvetica', 16))
+    check2.pack()
+
+#end Menu ----------------------------------------------------------------------
+#Log ---------------------------------------------------------------------------
+    S = Scrollbar(page2)
+    T = Text(page2, height=4, width=75)
+    S.pack(side=RIGHT, fill=Y)
+    T.pack(side=LEFT, fill=Y)
+    S.config(command=T.yview)
+    T.config(yscrollcommand=S.set)
+    T.insert(END, readLog())
+    T.config(state=DISABLED)
+
+    def updateLog():
+        #print('PASS: updateLog')
+        with open(logPath,"r") as f:
+            data = f.read()
+            T.config(state=NORMAL)
+            ScrollbarPos = S.get()
+            T.delete("1.0", "end")
+            T.insert(END,data)
+            T.yview_moveto(ScrollbarPos[0])
+            T.config(state=DISABLED)
+        T.after(1000, updateLog)
+
+    T.after(1000, updateLog)
+#end Log -----------------------------------------------------------------------
+#cpu monitor--------------------------------------------------------------------
+    canvas = FigureCanvasTkAgg(f, page3)
     canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH,expand=True)
     canvas.draw()
 
     ani = animation.FuncAnimation(f, animate, interval=500)
+#end cpu monitor----------------------------------------------------------------
     mainloop()
 
 # - - - - -
