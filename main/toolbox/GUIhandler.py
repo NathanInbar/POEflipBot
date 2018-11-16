@@ -20,6 +20,10 @@ import time
 
 #C:\Program Files (x86)\Grinding Gear Games\Path of Exile
 icoPath = getResourcePath() + '\\other\\poeflipicon.ico'
+
+tCurrentTrade = 'chaos | chance'
+tProfitMargin = '3 chaos'
+tTargetPlayer = 'Dan_Shiffman'
 #style.use("ggplot")#dark_background, ggplot, grayscale
 style.use("dark_background")
 f = Figure(figsize=(5,5), dpi=100)
@@ -64,25 +68,27 @@ def mainGUI():
     nb = ttk.Notebook(root)
     nb.grid(row=1, column=0, columnspan=50, rowspan=49, sticky='NESW')
 
-    page1 = ttk.Frame(nb)
-    page2 = ttk.Frame(nb)
-    page3 = ttk.Frame(nb)
+    MenuPage = ttk.Frame(nb)
+    logPage = ttk.Frame(nb)
+    tradingInfoPage = ttk.Frame(nb)
+    cpuPage = ttk.Frame(nb)
 
-    nb.add(page1, text='Menu')
-    nb.add(page2, text='   Log   ')
-    nb.add(page3, text='CPU Monitor')
+    nb.add(MenuPage, text='Menu')
+    nb.add(logPage, text='   Log   ')
+    nb.add(tradingInfoPage, text= 'Trade Info')
+    nb.add(cpuPage, text='CPU Monitor')
 #Menu --------------------------------------------------------------------------
-    settingsLabel = Label(page1,text='Correct POE Settings: ', font = ('Comic Sans MS', 24))
+    settingsLabel = Label(MenuPage,text='Correct POE Settings: ', font = ('Arial', 24))
     settingsLabel.pack()
-    check1 = Checkbutton(page1,text='800x600 window', font = ('Helvetica', 16))
+    check1 = Checkbutton(MenuPage,text='800x600 window', font = ('Helvetica', 16))
     check1.pack()
-    check2 = Checkbutton(page1,text='Lock cursor to window', font = ('Helvetica', 16))
+    check2 = Checkbutton(MenuPage,text='Lock cursor to window', font = ('Helvetica', 16))
     check2.pack()
 
 #end Menu ----------------------------------------------------------------------
 #Log ---------------------------------------------------------------------------
-    S = Scrollbar(page2)
-    T = Text(page2, height=4, width=75)
+    S = Scrollbar(logPage)
+    T = Text(logPage, height=4, width=75)
     S.pack(side=RIGHT, fill=Y)
     T.pack(side=LEFT, fill=Y)
     S.config(command=T.yview)
@@ -104,8 +110,14 @@ def mainGUI():
 
     T.after(1000, updateLog)
 #end Log -----------------------------------------------------------------------
+#trade Info---------------------------------------------------------------------
+    #tradeInfoText = 'Current Trade: {0}\nProfit Margin: {1}\nTarget Player: {2}'.format(tCurrentTrade,tProfitMargin,tTargetPlayer)
+    tLabel1 = Label(tradingInfoPage,text='Current Trade: {0}'.format(tCurrentTrade), font = ('Helvetica', 18)).grid(row=1,column=0,sticky=W)
+    tLabel2 = Label(tradingInfoPage,text='Profit Margin: {0}'.format(tProfitMargin), font = ('Helvetica', 18)).grid(row=2,column=0,sticky=W)
+    tLabel3 = Label(tradingInfoPage,text='Target Player: {0}'.format(tTargetPlayer), font = ('Helvetica', 18)).grid(row=3,column=0,sticky=W)
+#end trade Info-----------------------------------------------------------------
 #cpu monitor--------------------------------------------------------------------
-    canvas = FigureCanvasTkAgg(f, page3)
+    canvas = FigureCanvasTkAgg(f, cpuPage)
     canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH,expand=True)
     canvas.draw()
 
