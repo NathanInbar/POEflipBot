@@ -9,15 +9,18 @@ def toggleInventory():
 
 def moveToSlot(x,y, move = True):#x ranges from 1-12, y ranges from 1-5
     centerCursor()
-    add = 0
-    if(x >= 2):
-        add += 1
-    if(x >= 6):
-        add += 1
-    if (x >= 10):
-        add += 1
-    xSlot = (x*29) + InventoryOrigin[0] + add
-    ySlot = (y*29) + InventoryOrigin[1]
+    addx = 0
+    addy = 0
+    if(x > 2):
+        addx += 1
+    if(x > 6):
+        addx += 1
+    if (x > 10):
+        addx += 1
+    xSlot = (x*29) + InventoryOrigin[0] + addx
+    if ( y > 3):
+        addy += 1
+    ySlot = (y*29) + InventoryOrigin[1] + addy
     if (move):
         mouse.move(xSlot,ySlot)#(((x*29)+440), (((y*29)+327))
     return mouse.position
@@ -25,15 +28,18 @@ def moveToSlot(x,y, move = True):#x ranges from 1-12, y ranges from 1-5
 # - - -
 def moveToOfferSlot(x,y,move = True):
     centerCursor()
-    add = 0
+    addx = 0
+    addy = 0
     if(x >= 3):
-        add += 1
+        addx += 1
     if (x >= 7):
-        add += 1
+        addx += 1
     if (x >= 11):
-        add += 1
-    xSlot = (x*29) + OfferOrigin[0] + add
-    ySlot = (y*29) + OfferOrigin[1]
+        addx += 1
+    xSlot = (x*29) + OfferOrigin[0] + addx
+    if ( y > 3):
+        addy += 1
+    ySlot = (y*29) + OfferOrigin[1] + addy
     if (move):
         mouse.move(xSlot,ySlot)
     return mouse.position # returns the new mouse pos after centering and moving

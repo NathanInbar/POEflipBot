@@ -4,7 +4,7 @@ PoeFlipBot utilizes image recognition to verify the amount and type of each curr
 each trade. This is crucial for the integrity and efficiency of the bot itself.
 """
 
-import time, sys, random
+import time, sys, random, math
 import numpy as np
 #from skimage.measure import structural_similarity as ssim
 import cv2
@@ -19,8 +19,9 @@ rows = 5
 
 currency_images = []
 quant_images = []
-iconFolder = getResourcePath() + '\\PoE-Currency-Icons\\'
-quantFolder = getResourcePath() + '\\Quantity\\'
+
+iconFolder = getMainResourcePath() + "\\PoE-Currency-Icons\\"#"C:\\Users\\Cptcr\\OneDrive\\Documents\\GitHub\\POEflipBot\\main\\resources\\PoE-Currency-Icons"
+quantFolder = getMainResourcePath() + "\\Quantity\\"
 
 """-1 means we arent 100% sure what it is"""
 
@@ -44,33 +45,29 @@ Compare screencap to database of locally saved currency images. (loop through al
 def mse(img_a,img_b):#Returns the mean squared error (popular image comparision must be same dimensions)
     err = np.sum( (img_a.astype("float") - img_b.astype("float")) ** 2 )
     err /= float(img_a.shape[0] * img_b.shape[1])
-    print(err)
+    #print(err)
     return err
 def checkSlot(x,y):#checks invetory slot
     quantity = 1
-    slot_cords = moveToSlot(x,y,True)#use the coordinates of each slot of imageRecognition
-    img_grab = pyautogui.screenshot(region = (slot_cords[0],slot_cords[1],26,26 ))#was 29,29
+    slot_cords = moveToOfferSlot(x,y,True)#use the coordinates of each slot of imageRecognition
+    time.sleep(.01)
+    img_grab = pyautogui.screenshot(region = (slot_cords[0],slot_cords[1],26,26 ))
+    img_grab = cv2.cvtColor(np.array(img_grab), cv2.COLOR_RGB2BGR)#COLOR_RGB2GRAY
+    quant_img = img_grab[0:9, 2:11]#what part of the slot to crop
 
-    img_grab = cv2.cvtColor(np.array(img_grab), cv2.COLOR_RGB2BGR)
-    quant_img_ones = img_grab[0:9, 5:11]#6x9
-    quant_img_tens = img_grab[0:9, 0:6]#6x9
-    #cv2.imwrite("C:\\Users\\Cptcr\\OneDrive\\Documents\\GitHub\\POEflipBot\\main\\resources\\Quantity\\new.png",quant_img_ones)
-    #print(findQuantMatch(quant_img_tens))
-    if (findQuantMatch(quant_img_ones) == -1 ):#if the ones place doesnt find a match we know the value is less than 10
-        quantity = findQuantMatch(quant_img_tens)
-        print('No Tens Place')#i.e less than 10
-    else:
-        quantity = int(  str(findQuantMatch(quant_img_tens)) + str(findQuantMatch(quant_img_ones)) )
 
-    print(quantity)
-    #cv2.imshow("img", quant_img_ones) # to view the image (debug)
-    #cv2.waitKey(0)# to view the image (debug)
+    #keepWhitePixels(quant_img)
+    increaseContrast(quant_img)
+    quantity = findQuantMatch(quant_img)
+    cv2.imwrite("C:\\Users\\Cptcr\\OneDrive\\Documents\\GitHub\\POEflipBot\\main\\resources\\Quantity\\dl.png",quant_img)
+    cv2.imshow("img", quant_img) # to view the image (debug)
+    cv2.waitKey(0)# to view the image (debug)
 
-    #Do the logic here to detect what id and quant the item is.
+    removeIconBackground(img_grab)
+    removeWhitePixels(img_grab)
 
-    #id = findMatch(img_grab) # TO-DO: LOGIC (with image recog)
-
-    #print(id)
+    id = findMatch(img_grab) # TO-DO: LOGIC (with image recog)
+    print("ID: {} : QT: {}".format(id_dictionary[id],quantity) )
     # TO-DO: LOGIC (with image recog)
     slot_offer = (id,quantity) # nicely packed tuple to pass as an arg
     #if the slot is blank we shouldn't append anything.
@@ -78,10 +75,23 @@ def checkSlot(x,y):#checks invetory slot
 
 def findMatch(img_grab):
     lowest = 1000000
-    index = -1
+    index = 0
     """Compare grabbed slot to all currency images"""
     for x in range(len(currency_images)):
         diff = mse(img_grab,currency_images[x])
+        if (diff < lowest):
+            lowest = diff
+            index = x
+    if (lowest < 13000):#within reasonable matching
+        return index + 1 # ID
+    else:#not a match
+        return -1
+
+def findQuantMatch(img_grab):
+    lowest = mse(img_grab,quant_images[0])
+    index = 0
+    for x in range(len(quant_images)):
+        diff = mse(img_grab,quant_images[x])
         if (diff < lowest):
             lowest = diff
             index = x
@@ -90,19 +100,6 @@ def findMatch(img_grab):
     else:#not a match
         return -1
 
-def findQuantMatch(img_grab):
-    lowest = 1000000
-    index = -1
-    """Compare grabbed slot to all Quantity images"""
-    for x in range(len(quant_images)):
-        diff = mse(img_grab,quant_images[x])
-        if (diff < lowest):
-            lowest = diff
-            index = x
-    if (lowest < 12500):#within reasonable matching
-        return index  # ID
-    else:#not a match
-        return -1
 
 def checkTradeWindow():#12x5 (12 columns, 5 rows)
     """Will check every slot in the trade window and log its type and amount"""
@@ -129,11 +126,59 @@ def sortOffered(offered = currently_in_offer_window,sort = [],first = True):
 def getOffer():
     return offer
 
+def keepWhitePixels(img):
+    """
+    Will remove everything that isnt white, so that we can accurately check quantity
+    """
+    #can be 123,123,123
+    #can be 139,139,139
+    #can be 153,153,153
+    #can be 198,198,198
+    #can be 188,188,188
+    #can be 224,224,224
+    for y in range(len(img)):#Traverse every pixel in the image
+        for x in range(len(img[0])):
+            if (  ( int(img[y][x][0]) == int(img[y][x][1]) == int(img[y][x][2]) ) and (int(img[y][x][0]) + int(img[y][x][1]) + int(img[y][x][2]) ) > 300 ):#close enough to white to be the quantity value
+                #This checks to see if whitish enough (PoE doesnt use true white)
+                pass
+            else:
+                img[y][x] = [0,0,0]#sets all the irrelevant pixels to black
+
+def removeWhitePixels(img):
+    for y in range(len(img)):#Traverse every pixel in the image
+        for x in range(len(img[0])):
+            if (  ( int(img[y][x][0]) == int(img[y][x][1]) == int(img[y][x][2]) ) and (int(img[y][x][0]) + int(img[y][x][1]) + int(img[y][x][2]) ) > 300 ):#close enough to white to be the quantity value
+                img[y][x] = [0,0,0]#sets all the irrelevant pixels to black
+
+def removeIconBackground(img):
+    blue_background = (4,5,30)
+    green_background = (4,30,4)
+    for y in range(len(img)):#Traverse every pixel in the image
+        for x in range(len(img[0])):
+            if ( distance3d(blue_background,img[y][x]) <= 40  ):
+                img[y][x] = [0,0,0]
+            if (distance3d(green_background,img[y][x]) <= 40):
+                img[y][x] = [0,0,0]
+
 def contains(check,value):#Checks if value is contained in iterable-type-list check
     for x in range (len(check)):
         if check[x][0] == value:
             return True
     return False
+
+def increaseContrast(img):
+    for y in range(len(img)):#Traverse every pixel in the image
+        for x in range(len(img[0])):
+            img[y][x] = [img[y][x][0],0,img[y][x][2]]
+            if ( ((int(img[y][x][0]) + int(img[y][x][1]) + int(img[y][x][2]) ) > 160) and (int(img[y][x][0]) == int(img[y][x][2]))  ):
+                img[y][x] = [255,255,255]
+            else:
+                img[y][x] = [0,0,0]
+
+
+def distance3d(v1,v2):
+    distance = math.sqrt( (v2[0] - v1[0])**2 + (v2[1] - v1[1])**2 + (v2[2] - v1[2])**2 )
+    return distance
 
 def checkOfferWithTrade(trade_expected, currently_offered):
     if(trade_expected[0][0] == currently_offered[0][0]):#if the id's are the same
@@ -153,18 +198,17 @@ def addImagesToList():
     currency_images.append(cv2.imread(iconFolder +"47.png"))
     currency_images.append(cv2.imread(iconFolder +"69.png"))
     currency_images.append(cv2.imread(iconFolder +"blank.png"))
-    for x in range(10):
+    for x in range(1,21):
         quant_images.append(cv2.imread(quantFolder + str(x)+".png"))
 
 
 
+
 addImagesToList()#adds all images from the PoeCurrencyIcons folder to a list
-#^ Ask nathan how to only have to do this once
 time.sleep(2)
 #checkTradeWindow()
 #sortOffered(currently_in_offer_window,[])
 checkSlot(0,0)
-
 
 
 

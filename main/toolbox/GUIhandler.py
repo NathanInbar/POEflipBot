@@ -19,7 +19,7 @@ import psutil
 import time
 
 #C:\Program Files (x86)\Grinding Gear Games\Path of Exile
-icoPath = getResourcePath() + '\\other\\poeflipicon.ico'
+icoPath = getMainResourcePath() + '\\other\\poeflipicon.ico'
 #style.use("ggplot")#dark_background, ggplot, grayscale
 style.use("dark_background")
 f = Figure(figsize=(5,5), dpi=100)
