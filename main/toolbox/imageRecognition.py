@@ -48,6 +48,7 @@ def mse(img_a,img_b):#Returns the mean squared error (popular image comparision 
     #print(err)
     return err
 def checkSlot(x,y):#checks invetory slot
+    global saveName
     quantity = 1
     slot_cords = moveToOfferSlot(x,y,True)#use the coordinates of each slot of imageRecognition
     time.sleep(.01)
@@ -59,9 +60,9 @@ def checkSlot(x,y):#checks invetory slot
     #keepWhitePixels(quant_img)
     increaseContrast(quant_img)
     quantity = findQuantMatch(quant_img)
-    cv2.imwrite("C:\\Users\\Cptcr\\OneDrive\\Documents\\GitHub\\POEflipBot\\main\\resources\\Quantity\\dl.png",quant_img)
-    cv2.imshow("img", quant_img) # to view the image (debug)
-    cv2.waitKey(0)# to view the image (debug)
+    #cv2.imwrite("C:\\Users\\Cptcr\\OneDrive\\Documents\\GitHub\\POEflipBot\\main\\resources\\Quantity\\dl.png",quant_img)
+    #cv2.imshow("img", quant_img) # to view the image (debug)
+    #cv2.waitKey(0)# to view the image (debug)
 
     removeIconBackground(img_grab)
     removeWhitePixels(img_grab)
