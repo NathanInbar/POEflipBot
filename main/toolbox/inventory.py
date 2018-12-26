@@ -30,11 +30,11 @@ def moveToOfferSlot(x,y,move = True):
     centerCursor()
     addx = 0
     addy = 0
-    if(x >= 3):
+    if(x > 3):
         addx += 1
-    if (x >= 7):
+    if (x > 7):
         addx += 1
-    if (x >= 11):
+    if (x > 11):
         addx += 1
     xSlot = (x*29) + OfferOrigin[0] + addx
     if ( y > 3):

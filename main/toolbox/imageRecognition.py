@@ -33,7 +33,7 @@ quantFolder = getMainResourcePath() + "\\Quantity\\"
 
 #img_a = cv2.imread("main\\resources\\PoE-Currency-Icons\\test_compressed.png")
 #img_b = cv2.imread("main\\resources\\PoE-Currency-Icons\\test_cropped.png")
-
+#6 more pixels to the right larger
 
 currently_in_offer_window = []
 offer = []
@@ -51,7 +51,7 @@ def checkSlot(x,y):#checks invetory slot
     global saveName
     quantity = 1
     slot_cords = moveToOfferSlot(x,y,True)#use the coordinates of each slot of imageRecognition
-    time.sleep(.01)
+    time.sleep(.05)
     img_grab = pyautogui.screenshot(region = (slot_cords[0],slot_cords[1],26,26 ))
     img_grab = cv2.cvtColor(np.array(img_grab), cv2.COLOR_RGB2BGR)#COLOR_RGB2GRAY
     quant_img = img_grab[0:9, 2:11]#what part of the slot to crop
@@ -60,13 +60,13 @@ def checkSlot(x,y):#checks invetory slot
     #keepWhitePixels(quant_img)
     increaseContrast(quant_img)
     quantity = findQuantMatch(quant_img)
-    #cv2.imwrite("C:\\Users\\Cptcr\\OneDrive\\Documents\\GitHub\\POEflipBot\\main\\resources\\Quantity\\dl.png",quant_img)
-    #cv2.imshow("img", quant_img) # to view the image (debug)
-    #cv2.waitKey(0)# to view the image (debug)
+
 
     removeIconBackground(img_grab)
     removeWhitePixels(img_grab)
-
+    #cv2.imwrite("C:\\Users\\Cptcr\\Documents\\GitHub\\POEflipBot\\main\\resources\\PoE-Currency-Icons\\dl2.png",img_grab)
+    #cv2.imshow("img", img_grab) # to view the image (debug)
+    #cv2.waitKey(0)# to view the image (debug)
     id = findMatch(img_grab) # TO-DO: LOGIC (with image recog)
     print("ID: {} : QT: {}".format(id_dictionary[id],quantity) )
     # TO-DO: LOGIC (with image recog)
@@ -83,7 +83,7 @@ def findMatch(img_grab):
         if (diff < lowest):
             lowest = diff
             index = x
-    if (lowest < 13000):#within reasonable matching
+    if (lowest < 9000):#within reasonable matching
         return index + 1 # ID
     else:#not a match
         return -1
@@ -96,7 +96,7 @@ def findQuantMatch(img_grab):
         if (diff < lowest):
             lowest = diff
             index = x
-    if (lowest < 12500):#within reasonable matching
+    if (lowest < 16000):#within reasonable matching
         return index + 1 # ID
     else:#not a match
         return -1
@@ -207,9 +207,9 @@ def addImagesToList():
 
 addImagesToList()#adds all images from the PoeCurrencyIcons folder to a list
 time.sleep(2)
-#checkTradeWindow()
+checkTradeWindow()
 #sortOffered(currently_in_offer_window,[])
-checkSlot(0,0)
+#checkSlot(0,1)#col,row
 
 
 
