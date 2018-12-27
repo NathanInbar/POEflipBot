@@ -252,7 +252,7 @@ def addImagesToList():
 
 addImagesToList()#adds all images from the PoeCurrencyIcons folder to a list
 time.sleep(2)
-checkTradeWindow(4,67)
+checkTradeWindow(17,38)
 #sortOffered(currently_in_offer_window,[])
 #checkSlot(0,0,4)#col,row
 
