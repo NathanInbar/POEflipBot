@@ -22,6 +22,7 @@ quant_images = []
 
 iconFolder = getMainResourcePath() + "\\PoE-Currency-Icons\\"#"C:\\Users\\Cptcr\\OneDrive\\Documents\\GitHub\\POEflipBot\\main\\resources\\PoE-Currency-Icons"
 quantFolder = getMainResourcePath() + "\\Quantity\\"
+amount_expected = -1;
 
 """-1 means we arent 100% sure what it is"""
 
@@ -47,13 +48,14 @@ def mse(img_a,img_b):#Returns the mean squared error (popular image comparision 
     err /= float(img_a.shape[0] * img_b.shape[1])
     #print(err)
     return err
-def checkSlot(x,y):#checks invetory slot
+def checkSlot(x,y,expected_id):#checks invetory slot
+    global amount_expected
     global saveName
     quantity = 1
     slot_cords = moveToOfferSlot(x,y,True)#use the coordinates of each slot of imageRecognition
-    time.sleep(.05)
+    time.sleep(.25)
     img_grab = pyautogui.screenshot(region = (slot_cords[0],slot_cords[1],26,26 ))
-    img_grab = cv2.cvtColor(np.array(img_grab), cv2.COLOR_RGB2BGR)#COLOR_RGB2GRAY
+    img_grab = cv2.cvtColor(np.array(img_grab), cv2.COLOR_RGB2BGR)#COLOR_RGB2GRAY RGB2BGR
     quant_img = img_grab[0:9, 2:11]#what part of the slot to crop
 
 
@@ -64,15 +66,32 @@ def checkSlot(x,y):#checks invetory slot
 
     removeIconBackground(img_grab)
     removeWhitePixels(img_grab)
+    #toGrayScale(img_grab)
     #cv2.imwrite("C:\\Users\\Cptcr\\Documents\\GitHub\\POEflipBot\\main\\resources\\PoE-Currency-Icons\\dl2.png",img_grab)
     #cv2.imshow("img", img_grab) # to view the image (debug)
     #cv2.waitKey(0)# to view the image (debug)
-    id = findMatch(img_grab) # TO-DO: LOGIC (with image recog)
+    id = guessMatch(img_grab,expected_id) # TO-DO: LOGIC (with image recog)
     print("ID: {} : QT: {}".format(id_dictionary[id],quantity) )
     # TO-DO: LOGIC (with image recog)
     slot_offer = (id,quantity) # nicely packed tuple to pass as an arg
+    if(quantity > 0):
+        print(amount_expected)
+        amount_expected -= quantity#as we get more currency subtract, how much we are expecting.
     #if the slot is blank we shouldn't append anything.
     currently_in_offer_window.append(  slot_offer  )# what the checked slot is offering and append it.
+
+def guessMatch(img_grab,guess_id):
+    """
+    This will check if the currency we assume is placed is what is actually placed, if not call the extensive findMatch function.
+    """
+    lowest = 1000000
+    index = 0
+    diff = mse(img_grab,currency_images[guess_id - 1])
+    if (diff < 1500):#VERY CLOSE MATCH
+        print("easy match")
+        return guess_id
+    else:#If what we assumed would be the ID of the currency is incorrect, do an extensive search to find the actual ID
+        return findMatch(img_grab)
 
 def findMatch(img_grab):
     lowest = 1000000
@@ -102,12 +121,33 @@ def findQuantMatch(img_grab):
         return -1
 
 
-def checkTradeWindow():#12x5 (12 columns, 5 rows)
+def checkTradeWindow(expected_id,expected_amount):#12x5 (12 columns, 5 rows)
+    global amount_expected
+    amount_expected = expected_amount
     """Will check every slot in the trade window and log its type and amount"""
     for y in range(cols):
         for x in range(rows):
-            checkSlot(y,x)#for every slot, read the ID and quant
+            checkSlot(y,x,expected_id)#for every slot, read the ID and quant
+            if(amount_expected <= 0):
+                print("we have enuf currency!!!!")
+                if(checkAllItemsHovered() == False):
+                    cursorAllSlots()
+                return;
     sortOffered()
+
+def checkAllItemsHovered():
+    accept_grab = pyautogui.screenshot(region = (105,460,1,1 ))
+    accept_grab = cv2.cvtColor(np.array(accept_grab), cv2.COLOR_RGB2BGR)#COLOR_RGB2GRAY
+    if(accept_grab[0][0][0] < 179):
+        #not all items are hovered because the accept button isnt red
+        return False;
+        #now we mouse over each slot and take it as extra currency, strictly.
+    return True
+def cursorAllSlots():
+    for y in range(cols):
+        for x in range(rows):
+            moveToOfferSlot(y,x,True)
+            time.sleep(0.08)
 
 def sortOffered(offered = currently_in_offer_window,sort = [],first = True):
     global offer
@@ -161,6 +201,11 @@ def removeIconBackground(img):
             if (distance3d(green_background,img[y][x]) <= 40):
                 img[y][x] = [0,0,0]
 
+def toGrayScale(img):
+    for y in range(len(img)):
+        for x in range(len(img[0])):
+            img[y][x] = [  img[y][x][0] * .521,img[y][x][1] * .521,img[y][x][2] * .521 ]
+
 def contains(check,value):#Checks if value is contained in iterable-type-list check
     for x in range (len(check)):
         if check[x][0] == value:
@@ -207,9 +252,10 @@ def addImagesToList():
 
 addImagesToList()#adds all images from the PoeCurrencyIcons folder to a list
 time.sleep(2)
-checkTradeWindow()
+checkTradeWindow(17,38)
 #sortOffered(currently_in_offer_window,[])
-#checkSlot(0,1)#col,row
+#checkSlot(0,0,4)#col,row
+
 
 
 
