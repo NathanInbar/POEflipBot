@@ -19,7 +19,7 @@ import psutil
 import time
 
 #C:\Program Files (x86)\Grinding Gear Games\Path of Exile
-icoPath = getResourcePath() + '\\other\\poeflipicon.ico'
+icoPath = getMainResourcePath() + '\\other\\poeflipicon.ico'
 
 tCurrentTrade = 'chaos | chance'
 tProfitMargin = '3 chaos'
