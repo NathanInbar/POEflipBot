@@ -8,20 +8,22 @@ from inventory import *#toolbox.
 from general import *#toolbox.
 import glob
 import clipboard as cb
-
+#Size of inventory (trade window as well)
 cols = 12
 rows = 5
-
+#---
+#DEFAULTS
 currently_in_offer_window = []
 offer = []
 initial_amount = -1;
 amount_expected = -1
 name_expected = ' '
 should_copy = True;
-
+#----
+#----!!!!These two lines shouldn't really be in this file. origin should be stored on program startup and fed to this file from another.
 centerCursor()
 origin = mouse.position
-
+#---
 
 def checkSlot(x,y):
     global amount_expected
@@ -67,6 +69,10 @@ def getTradeContents(expected_name,expected_quantity):
     sortOffered()
 
 def sortOffered(offered = currently_in_offer_window, sort = [], first = True):
+    """
+    Sorts the list of currency in the trade offer window and returns True or False on whether or not we should
+    take the trade.
+    """
     global offer
     global name_expected
     global amount_expected
@@ -89,8 +95,9 @@ def sortOffered(offered = currently_in_offer_window, sort = [], first = True):
             if(offer[y][0] == name_expected):
                 if(offer[y][1] == initial_amount):
                     print("Accept Trade!")
+                    acceptTrade()
                     return
-    print('Decline Trade!')
+    print('Decline Trade!')#We will continuosly rescan until the correct currency and quantity is inserted
 
 def getOffer():
     return offer
@@ -99,6 +106,13 @@ def contains(check,value):#Checks if value is contained in iterable-type-list ch
         if check[x][0] == value:
             return True
     return False
+def acceptTrade():
+    """
+    Navigates mouse to ACCEPT button and clicks it.
+    """
+    centerCursor()
+    mouse.move(105,460)#where the accept button is (also the same pixel that we are scanning to see if items are hovered)
+    leftClick()#general function
 def checkAllItemsHovered():
     accept_grab = pyautogui.screenshot(region = (origin[0] + 105,origin[1] + 460,1,1 ))
     accept_grab = cv2.cvtColor(np.array(accept_grab), cv2.COLOR_RGB2BGR)#COLOR_RGB2GRAY
@@ -109,6 +123,15 @@ def checkAllItemsHovered():
         #now we mouse over each slot and take it as extra currency, strictly.
     print('all items hovered')
     return True
+
+def checkTradeComplication():
+    """
+    This will check if a user has removed or inserted an item into the window.
+    Checking for red-border that pops up when this occurs.
+    When we do encounter a trade 'complication' we will stop all checking and reset and rescan window
+    """
+    #position of pixel in red-border (x,y)
+    pass
 
 def getItemInfo():
     """
@@ -126,9 +149,9 @@ def copy():
 
 def parseInfo():
     """
-    Extract Name and Quantity
+    Extract Name and Quantity from our clipboard
     """
-    if(cb.paste() != 'DEFAULT'):
+    if(cb.paste() != 'DEFAULT'):#Our clipboard will be reset after each item check. This checks to make sure a clean clipboard is coming in
         text = cb.paste()
         filteredText = text.splitlines()
         itemName = filteredText[1]
@@ -137,16 +160,15 @@ def parseInfo():
         itemQuantFiltered = itemQuant.replace('Stack Size: ', '')
         itemQuantFiltered = itemQuantFiltered.split(separator,1)[0]
         itemQuant = itemQuantFiltered
-        cb.copy('DEFAULT')
+        cb.copy('DEFAULT')#Sets the clipboard so items arent scanned twice. (repeat clipboard usage)
         return (itemName, int(itemQuant))
     return ('None',-1)
 
 
 time.sleep(2.0)
 #checkSlot(0,0)
-getTradeContents('Scroll of Wisdom',38)
-#mouse.position = (origin[0] + 105,origin[1] + 460)
-
+getTradeContents('Scroll of Wisdom',38)#We need to parse incoming trade, and supply this function with the type and quant--
+#--->that we are expecting.
 
 
 
