@@ -67,3 +67,5 @@ def moveItemFast(x,y):
     keyboard.release(Key.ctrl)
     time.sleep(0.3)
     centerCursor()
+
+# - - - - - - - - - - - THESE ARE THE STASH FUNCIONS
