@@ -14,6 +14,14 @@ from inventory import *#toolbox.
 from general import *#toolbox.
 import glob
 
+import time, sys, random
+import numpy as np
+#from skimage.measure import structural_similarity as ssim
+import cv2
+import pyautogui
+import imutils
+from toolbox.inventory import *
+from toolbox.general import *
 cols = 12
 rows = 5
 
@@ -34,6 +42,18 @@ quantFolder = getMainResourcePath() + "\\Quantity\\"
 #img_a = cv2.imread("main\\resources\\PoE-Currency-Icons\\test_compressed.png")
 #img_b = cv2.imread("main\\resources\\PoE-Currency-Icons\\test_cropped.png")
 #6 more pixels to the right larger
+
+currency_images = []
+"""-1 means we arent 100% sure what it is"""
+currency_images.append(cv2.imread("main\\resources\\PoE-Currency-Icons\\blank.png"))#alt(0)
+currency_images.append(cv2.imread("main\\resources\\PoE-Currency-Icons\\1.png"))#alt(1)
+currency_images.append(cv2.imread("main\\resources\\PoE-Currency-Icons\\2.png"))#fusing(2)
+currency_images.append(cv2.imread("main\\resources\\PoE-Currency-Icons\\3.png"))#alchemy(3)
+currency_images.append(cv2.imread("main\\resources\\PoE-Currency-Icons\\4.png"))#chaos (4)
+
+#img_a = cv2.imread("main\\resources\\PoE-Currency-Icons\\test_compressed.png")
+#img_b = cv2.imread("main\\resources\\PoE-Currency-Icons\\test_cropped.png")
+
 
 currently_in_offer_window = []
 offer = []
@@ -98,6 +118,20 @@ def findQuantMatch(img_grab):
             index = x
     if (lowest < 16000):#within reasonable matching
         return index + 1 # ID
+    else:#not a match
+        return -1
+
+def findMatch(img_grab):
+    lowest = 1000000
+    index = -1
+    """Compare grabbed slot to all currency image"""
+    for x in range(len(currency_images)):
+        diff = mse(img_grab,currency_images[x])
+        if (diff < lowest):
+            lowest = diff
+            index = x
+    if (lowest < 11000):#within reasonable matching
+        return index # ID
     else:#not a match
         return -1
 

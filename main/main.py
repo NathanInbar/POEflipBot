@@ -6,24 +6,29 @@ from toolbox.imageRecognition import *
 from toolbox.marketManager import *
 from toolbox.GUIhandler import *
 import threading as mp
-import sys
-#required python modules:
-#pynput, (lxml, requests, cssselect,)<-webscrape
+#from toolbox.marketManager import *
+#required python modules: pynput, (lxml, requests, cssselect,)<-webscrape, pandas
+#uninstall (no longer needed): (oauth2client, PyOpenSSL, gspread)<-google spreadsheets
 #(numpy,opencv-python, scikit-image, imutils, pyobjc-core, pyautogui)<-- image recognition
-#(pandas)<-dataframes/writing to csv
-#(matplotlib)<-graphs, (psutil)<-pull system data like cpu usage
+#print(dissectTrade(readMessage()[1]))
+"""
+def testProcess():
+    i = 1
+    while( i < 5):
+        time.sleep(1)
+        print(i)
+        i+=1
+"""
+def chatReadLoop():
+    while True:
+        time.sleep(1)
+        print(readMessage())
 
 #def marketReadLoop():
 if __name__ == "__main__":
-    pass
-    #SERIALIZING
-    checkVariableDefs()
-    #--end serializing
-
-    #MULTITHREADING
-    #chatRead = mp.Thread(target=chatReadLoop)
+    chatRead = mp.Thread(target=chatReadLoop)
     #test = mp.Thread(target=testProcess)
-    ##chatRead.start()
+    chatRead.start()
     #test.start()
     ##chatRead.join()
     #test.join()
