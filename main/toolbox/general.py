@@ -56,6 +56,11 @@ def leftClick():
     mouse.press(Button.left)
     mouse.release(Button.left)
 
+def openStash():
+    centerCursor();
+    mouse.move(376,230)
+    time.sleep(0.3)
+    leftClick();
 
 # - - - - -
 def getProjectPath():
